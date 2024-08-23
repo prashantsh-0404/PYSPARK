@@ -1,0 +1,19 @@
+Searching 1 file for " "
+
+import sys 
+from pyspark.sql.window import Window 
+import pyspark.sql.functions as func 
+  
+windowSpec = Window .partitionBy(sdf['category']).orderBy(sdf['revenue'].desc()).rangeBetween(-sys.maxsize, sys.maxsize) 
+  
+sdf = sqlContext.table("productRevenue")
+  
+revenue_difference = func.max(sdf['revenue']).over(windowSpec) - sdf['revenue']
+sdf.select( sdf['product'],sdf['category'],sdf['revenue'],revenue_difference.alias("revenue_difference")) 
+
+
+
+revenue=[6000,1500,5500,5000,6000,2500,3000,3000,4500,6500]
+product=["Thin","Normal","Mini","Ultra","thin","Very","thin","Big","Bendable","Foldable","Pro","Pro2"]
+category=["Cell","phone","Tablet","Tablet","Cell","phone","Cell","phone","Tablet","Cell","phone","Cell","phone","Tablet","Tablet"]
+
